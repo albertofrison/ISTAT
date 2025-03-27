@@ -45,10 +45,14 @@ df_macellazioni <- data.frame (db_macellazioni)
 df_macellazioni$obsValue <- as.numeric(df_macellazioni$obsValue)
 
 df_macellazioni %>%
-  filter (FREQ == "A") %>%
+  filter (FREQ == "M") %>%
   filter (REF_AREA == "IT") %>%
   filter (DATA_TYPE == "TOTLIVWEIG_KG") %>%
-  #filter (obsTime %in% c(2002:2024)) %>%
-  group_by(TYPE_OF_HERD) %>%
-  summarize (Total = sum(obsValue, na.rm = TRUE))
+  filter (TYPE_OF_HERD == "BREEDTURK") %>%
+  #filter (obsTime %in% as.character(c(2022:2024))) %>%
+  group_by(obsTime) %>%
+  summarize (Total = sum(obsValue, na.rm = TRUE)) %>%
+  ggplot (aes (x = obsTime, y = Total)) +
+  geom_bar(stat = "identity") 
+
 
