@@ -43,13 +43,16 @@ df_macellazioni <- data.frame (db_macellazioni)
 
 #df_macellazioni$obsTime <- as.factor(df_macellazioni$obsTime)
 df_macellazioni$obsValue <- as.numeric(df_macellazioni$obsValue)
-
+df_macellazioni$YEAR <- str_sub(df_macellazioni$obsTime, 1,4)
+df_macellazioni$MONTH <- ifelse (df_macellazioni$FREQ == "M", as.character (str_sub(df_macellazioni$obsTime,6,8)), "")
+   
 df_macellazioni %>%
   filter (FREQ == "M") %>%
   filter (REF_AREA == "IT") %>%
   filter (DATA_TYPE == "TOTLIVWEIG_KG") %>%
   filter (TYPE_OF_HERD == "BREEDTURK") %>%
-  #filter (obsTime %in% as.character(c(2022:2024))) %>%
+  filter (YEAR %in% as.character(c(2014:2024))) %>%
+  #group_by(obsTime) %>%
   group_by(obsTime) %>%
   summarize (Total = sum(obsValue, na.rm = TRUE)) %>%
   ggplot (aes (x = obsTime, y = Total)) +
